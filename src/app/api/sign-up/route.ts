@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import userModel from "@/model/user";
 import { sendVerificationCode } from "@/helper/sendVerificationCode";
 import { NextRequest, NextResponse } from "next/server";
-export async function POST(req: NextRequest) {
+export const POST = async (req: NextRequest) => {
   await dbConnect();
   try {
     const { username, email, password, isSeller } = await req.json();
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       100000 + Math.random() * 900000
     ).toString();
     const expiry = new Date();
-    expiry.setHours(expiry.getHours() + 1);
+    expiry.setSeconds(expiry.getSeconds() + 60);
     if (isUser) {
       return NextResponse.json({
         sucess: false,
@@ -45,17 +45,23 @@ export async function POST(req: NextRequest) {
           message: emailResponse.message,
         });
       }
-      return NextResponse.json({
-        sucess: true,
-        message:
-          "User register successfully and verification code send to email please verify",
-      });
+      return NextResponse.json(
+        {
+          sucess: true,
+          message:
+            "User register successfully and verification code send to email please verify",
+        },
+        { status: 200 }
+      );
     }
   } catch (e: any) {
     console.log(`Error in Resgistion of user ${e.message}`);
-    return NextResponse.json({
-      sucess: false,
-      message: "Error in Resgistion of user",
-    });
+    return NextResponse.json(
+      {
+        sucess: false,
+        message: "Error in Resgistion of user",
+      },
+      { status: 501 }
+    );
   }
-}
+};

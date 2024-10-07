@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
     url.pathname.startsWith("/sign-in") || url.pathname.startsWith("/sign-up") || url.pathname.startsWith("/verify")
   )) {
      // If user is an admin, redirect to the dashboard
-     if (token.isAdmin) {
+     if (token.isSeller) {
       return NextResponse.redirect(new URL('/dashboard', request.url))
     } else {
       // If user is not an admin, redirect to home page
