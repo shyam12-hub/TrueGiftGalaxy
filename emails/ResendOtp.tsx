@@ -25,7 +25,7 @@ function ResendOtp({ email }: { email: string }) {
     }
   }, [isMounted, seconds]);
 
-  const resendOtpHandler = async () => {
+const resendOtpHandler = async () => {
     if (seconds === 0 && !isResendOtp) {
       setIsResendOtp(true); // Start OTP resend process
       try {
