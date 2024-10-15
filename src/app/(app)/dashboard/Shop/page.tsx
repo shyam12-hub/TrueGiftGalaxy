@@ -1,5 +1,6 @@
 "use client";
 import axios from "axios";
+import DashboardLayout from "../../DashboardLayout";
 import { useForm } from "react-hook-form";
 import { shopInfoValidation } from "@/schemas/shopInfoValidation";
 import {
@@ -37,7 +38,7 @@ function page() {
   };
 
   return (
-    <div>
+    <DashboardLayout>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(submitShopInfo)}>
           <FormField
@@ -138,7 +139,7 @@ function page() {
           </Button>
         </form>
       </Form>
-    </div>
+    </DashboardLayout>
   );
 }
 

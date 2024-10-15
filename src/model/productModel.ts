@@ -5,10 +5,19 @@ interface Product extends Document {
   productDescription: string;
   productPrice: number;
   rating: number;
-  productMainImage: string;
-  viewImages: string[];
+  category: string;
+  productMainImage: {
+    imageUrl: string;
+    publicId: string;
+  };
+  viewImages: [
+    {
+      imageUrl: string;
+      publicId: string;
+    }
+  ];
   userId: mongoose.Schema.Types.ObjectId | string;
-  shopInfo: mongoose.Schema.Types.ObjectId | Shop;
+  shopInfo: Shop | mongoose.Schema.Types.ObjectId;
 }
 
 const productSchema: Schema<Product> = new Schema({
@@ -17,6 +26,10 @@ const productSchema: Schema<Product> = new Schema({
     required: true,
   },
   productDescription: {
+    type: String,
+    required: true,
+  },
+  category: {
     type: String,
     required: true,
   },
@@ -29,13 +42,27 @@ const productSchema: Schema<Product> = new Schema({
     default: 0,
   },
   productMainImage: {
-    type: String,
-    required: true,
+    imageUrl: {
+      type: String,
+      required: true,
+    },
+    publicId: {
+      type: String,
+      required: true,
+    },
   },
-  viewImages: {
-    type: [String],
-    required: true,
-  },
+  viewImages: [
+    {
+      imageUrl: {
+        type: String,
+        required: true,
+      },
+      publicId: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
