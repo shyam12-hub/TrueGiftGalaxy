@@ -17,7 +17,7 @@ interface Product {
   userId: string;
   shopInfo: object;
 }
-export const groupByCategory = (products: Product[]) => {
+export const groupByCategory = (products: Product[] = []) => {
   const groupedProducts = products.reduce(
     (acc: Record<string, Product[]>, product: Product) => {
       if (!acc[product.category]) {
@@ -26,7 +26,7 @@ export const groupByCategory = (products: Product[]) => {
       acc[product.category].push(product);
       return acc;
     },
-    {} as Record<string, typeof products>
+    {} as Record<string, Product[]>
   );
   return groupedProducts;
 };

@@ -1,63 +1,35 @@
 "use client";
-import { useState, useEffect } from "react";
+
 import DashboardLayout from "../../DashboardLayout";
 
 import { Loader2 } from "lucide-react";
-import { fetchProducts } from "@/helper/fetechAllproducts";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { PlusCircle, ShoppingBag } from "lucide-react";
+import { fetchData } from "@/helper/fetechAllproducts";
 import AddProduct from "../../AddProduct";
+import { ShoppingBag } from "lucide-react";
+
 import { groupByCategory } from "@/helper/GroupByCategory";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import useSwr, { mutate } from "swr";
+
 function page() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { data, error, isValidating } = useSwr("/api/getproducts", fetchData);
 
-  useEffect(() => {
-    // Define async function within useEffect
-    const fetchData = async () => {
-      setLoading(true); // Start loading
-      try {
-        const result = await fetchProducts();
-        setProducts(result); // Assuming result contains the products
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false); // Stop loading
-      }
-    };
-
-    fetchData(); // Call the async function
-  }, []);
+  if (error) {
+    return <h1>Error Happen</h1>;
+  }
 
   return (
     <DashboardLayout>
-      {loading ? (
+      {isValidating ? (
         <div className="flex justify-center items-center h-screen text-rose-600">
           {" "}
           <Loader2 className="animate-spin" />
         </div>
       ) : (
         <div>
-          <div className="mb-6 text-center flex justify-start items-center">
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button className="bg-rose-600 hover:bg-rose-700">
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Add Product
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AddProduct />
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-          {products.length === 0 ? (
+          <AddProduct onProductAdded={() => mutate("/api/getproducts")} />
+          {data?.length === 0 ? (
             <div className="text-center">
               <ShoppingBag className="mx-auto h-24 w-24 text-rose-300 mb-4" />
               <p className="text-xl text-gray-600 mb-4">
@@ -66,7 +38,7 @@ function page() {
             </div>
           ) : (
             <div className="space-y-12">
-              {Object.entries(groupByCategory(products)).map(
+              {Object.entries(groupByCategory(data)).map(
                 ([category, categoryProducts]) => (
                   <div key={category}>
                     <h2
@@ -79,7 +51,7 @@ function page() {
                       {categoryProducts.map((product) => {
                         return (
                           <Card
-                            key={product?._id}
+                            key={product.productMainImage.imageUrl}
                             className="overflow-hidden hover:shadow-lg transition-shadow duration-300"
                           >
                             <CardContent className="p-0">

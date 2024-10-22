@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { Shop } from "./shopModel";
+import Shop from "./shopModel";
 interface Product extends Document {
   productName: string;
   productDescription: string;
@@ -17,7 +17,7 @@ interface Product extends Document {
     }
   ];
   userId: mongoose.Schema.Types.ObjectId | string;
-  shopInfo: Shop | mongoose.Schema.Types.ObjectId;
+  shop: object;
 }
 
 const productSchema: Schema<Product> = new Schema({
@@ -68,9 +68,8 @@ const productSchema: Schema<Product> = new Schema({
     ref: "User",
     required: true,
   },
-  shopInfo: {
-    type: mongoose.Schema.Types.ObjectId, // Reference the Shop by ObjectId
-    ref: "Shop", // Reference to Shop model
+  shop: {
+    type: Object,
     required: true,
   },
 });
